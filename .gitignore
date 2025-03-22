@@ -1,0 +1,50 @@
+# Byte-compiled / compiled Python files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.venv*
+
+# Docker container logs, if any
+**/temp_uploads/
+**/temp_uploads/**
+.DS_Store
+Thumbs.db
+.env
+node_modules/
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.venv*
+fomm/
+**/temp_uploads/
+**/temp_uploads/**
+
+.DS_Store
+Thumbs.db
+
+.env
+
+node_modules/
+/backend/models/
+face-alignment/
