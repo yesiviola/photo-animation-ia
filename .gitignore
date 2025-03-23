@@ -9,6 +9,8 @@ __pycache__/
 
 # Virtual environments
 .venv/
+# Ignorar .env
+*.env
 venv/
 env/
 ENV/
@@ -42,9 +44,7 @@ fomm/
 
 .DS_Store
 Thumbs.db
-
-.env
-
 node_modules/
 /backend/models/
 face-alignment/
+frontend/node_modules/

@@ -23,8 +23,8 @@ COPY requirements.txt .
 # 5. Instalar dependencias con pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. Copiar el resto del código
-COPY app/ app/
+# 6. Copiar el resto del código (excluyendo .env)
+COPY . .
 
 # 7. Exponer el puerto 8000 (donde corre FastAPI por defecto)
 EXPOSE 8000
