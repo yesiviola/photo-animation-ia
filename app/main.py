@@ -8,6 +8,7 @@ from app.api.animation_router import router as animation_router
 from app.api.auth_router import router as auth_router
 from app.api.videos_router import router as videos_router
 from slowapi.middleware import SlowAPIMiddleware
+from app.database import init_db
 
 # Configurar el rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -19,6 +20,8 @@ def create_app() -> FastAPI:
         description="Backend para el proyecto Photo Animation IA",
         version="1.0.0"
     )
+
+    init_db() #llamamos a init_db para crear table si no existe
 
     # Configurar el rate limiter y el middleware
     app.state.limiter = limiter

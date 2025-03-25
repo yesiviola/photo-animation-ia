@@ -5,6 +5,12 @@ from app.services.animate_service import animate_photo
 from app.api.auth_router import get_current_user
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+import uuid
+from typing import Optional
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.models import Animation
+from s3_utils import upload_to_s3
 
 router = APIRouter()
 limiter = Limiter(key_func=get_remote_address)
@@ -14,7 +20,8 @@ limiter = Limiter(key_func=get_remote_address)
 async def animate_image(
     request: Request,
     image_id: str,
-    driving_video_id: str = None,  # ID del video personalizado
+    driving_video_id: Optional [str] = None,
+    db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
     """
@@ -45,10 +52,27 @@ async def animate_image(
     output_video_path = animate_photo(image_path, driving_video_path)
     if not output_video_path:
         raise HTTPException(status_code=500, detail="Error en la animación")
+    
+
+    #aqui sube el mp4 final a s3
+
+    s3_key = f"animations/{uuid.uuid4()}.mp4"
+    s3_url = upload_to_s3(output_video_path, s3_key)
+
+    #guardar en DB
+    new_anim = Animation(
+        user_id=current_user.id, s3_url=s3_url
+    )
+    db.add(new_anim)
+    db.commit()
+    db.refresh(new_anim)
+
 
     return {
-        "message": "Animación generada exitosamente",
-        "animation_file": output_video_path
+        "message": "Animación generada exitosamente☺️",
+        "animation_file": output_video_path,
+        "s3_url": s3_url
+    
     }
 
 @router.get("/download")

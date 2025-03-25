@@ -1,5 +1,6 @@
 import os
 import uuid
+import subprocess
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from s3_utils import upload_to_s3  # Ajusta la ruta del import si hace falta
 
@@ -36,12 +37,26 @@ async def upload_driving_video(file: UploadFile = File(...)):
     s3_key = f"videos/{unique_id}{file_extension}"
     s3_url = upload_to_s3(local_path, s3_key)
 
-    # Nota: NO borramos local_path => FOMM podrá usarlo
-    # os.remove(local_path)  # <--- la comentamos para conservarlo
+    # Llamar a crop-video.py
+    command = [
+        "python", "fomm/crop-video.py",
+        "--inp", local_path,
+        "--cpu"
+    ]
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        ffmpeg_commands = result.stdout.splitlines()
+
+        # Ejecutar los comandos generados por crop-video.py
+        for ffmpeg_command in ffmpeg_commands:
+            subprocess.run(ffmpeg_command, shell=True, check=True)
+
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=500, detail=f"Error al procesar el video: {e.stderr}")
 
     return {
-        "message": "Video subido exitosamente",
-        "video_id": unique_id,   # ID para usar local
+        "message": "Video subido y procesado exitosamente",
+        "video_id": unique_id,
         "local_path": local_path,
         "s3_url": s3_url
     }

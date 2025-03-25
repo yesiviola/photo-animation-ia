@@ -27,4 +27,13 @@ passlib[bcrypt]
 boto3
 requests
 python-dotenv
+asyncpg
+sqlalchemy
+databases
+psycopg2-binary
+pydantic[email]
+email-validator
+
+
+
 
