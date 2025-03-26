@@ -1,0 +1,20 @@
+# Excluir el entorno virtual
+.venv
+# Excluir archivos y carpetas de git
+.git
+.gitignore
+# Excluir archivos temporales y cachés
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+*.db
+*.sqlite3
+# Excluir otros archivos o carpetas pesadas que no necesites en la imagen
+docker-compose.yml
+*.log
+.pytest_cache
+
+node_modules
+
