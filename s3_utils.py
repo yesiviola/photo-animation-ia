@@ -1,6 +1,8 @@
 import boto3
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 s3 = boto3.client(
     's3',
@@ -17,3 +19,13 @@ def upload_to_s3(file_path: str, key: str) -> str:
     bucket_name = os.getenv('AWS_S3_BUCKET')
     s3.upload_file(file_path, bucket_name, key)
     return f"https://{bucket_name}.s3.amazonaws.com/{key}"
+
+
+
+
+def download_from_s3(s3_key: str, local_path: str):
+    """
+    Descarga el archivo desde S3 usando 's3_key' y lo guarda en 'local_path'.
+    """
+    bucket_name = os.getenv('AWS_S3_BUCKET')
+    s3.download_file(bucket_name, s3_key, local_path)

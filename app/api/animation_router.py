@@ -10,7 +10,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Animation
-from s3_utils import upload_to_s3
+from s3_utils import upload_to_s3, download_from_s3
 
 router = APIRouter()
 limiter = Limiter(key_func=get_remote_address)
@@ -26,17 +26,33 @@ async def animate_image(
 ):
     """
     Aplica IA para animar la imagen cuyo id se pasa como parámetro.
-    driving_video_id es el video subido con /videos/upload (conservado localmente).
-    Si no se provee, se usa un driving.mp4 fijo en /static/driving.mp4.
+    - Si se suministra un driving_video_id, se buscará en "temp_uploads" (video personalizado).
+    - Si no, se usará el video fijo ubicado en "static/driving.mp4".
+    
+    Además, si la imagen no se encuentra localmente, se intentará descargar desde S3.
     """
-    # Buscar la imagen en temp_uploads probando distintas extensiones
+    # Asegurarse de que el directorio temp_uploads exista
+    os.makedirs("temp_uploads", exist_ok=True)
+    
     possible_extensions = [".jpg", ".jpeg", ".png"]
     image_path = None
+
+    # Buscar la imagen localmente; si no existe, intentar descargarla de S3
     for ext in possible_extensions:
         temp_path = os.path.join("temp_uploads", f"{image_id}{ext}")
         if os.path.exists(temp_path):
             image_path = temp_path
             break
+        else:
+            s3_key = f"images/{image_id}{ext}"
+            try:
+                download_from_s3(s3_key, temp_path)
+                if os.path.exists(temp_path):
+                    image_path = temp_path
+                    break
+            except Exception as e:
+                print(f"No se pudo descargar {s3_key} desde S3: {e}")
+                continue
 
     if image_path is None:
         raise HTTPException(status_code=404, detail="Imagen no encontrada")
@@ -46,16 +62,15 @@ async def animate_image(
         driving_video_path = os.path.join("temp_uploads", f"{driving_video_id}.mp4")
         if not os.path.exists(driving_video_path):
             raise HTTPException(
-                status_code=404, 
+                status_code=404,
                 detail=f"Video personalizado con ID {driving_video_id} no encontrado"
             )
     else:
-        # Usar un video fijo
         driving_video_path = os.path.join("static", "driving.mp4")
         if not os.path.exists(driving_video_path):
             raise HTTPException(status_code=404, detail="Video fijo no encontrado")
 
-    # Llamar a la función de animación
+    # Ejecutar la animación
     output_video_path = animate_photo(image_path, driving_video_path)
     if not output_video_path:
         raise HTTPException(status_code=500, detail="Error en la animación")
@@ -64,7 +79,7 @@ async def animate_image(
     s3_key = f"animations/{uuid.uuid4()}.mp4"
     s3_url = upload_to_s3(output_video_path, s3_key)
 
-    # Guardar el registro en la base de datos
+    # Guardar el registro de la animación en la base de datos
     new_anim = Animation(
         user_id=current_user.id,
         s3_url=s3_url
@@ -74,7 +89,7 @@ async def animate_image(
     db.refresh(new_anim)
 
     return {
-        "message": "Animación generada exitosamente☺️",
+        "message": "Animación generada exitosamente",
         "animation_file": output_video_path,
         "s3_url": s3_url
     }

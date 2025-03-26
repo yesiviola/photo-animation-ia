@@ -17,11 +17,16 @@ RUN apt-get update && \
 # 3. Crear un directorio de trabajo dentro del contenedor
 WORKDIR /app
 
+
 # 4. Copiar el archivo de requerimientos
 COPY requirements.txt .
 
 # 5. Instalar dependencias con pip
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar la carpeta "fomm" y "static"
+COPY fomm/ fomm/
+COPY static/ static/
 
 # 6. Copiar el resto del código (excluyendo .env)
 COPY . .

@@ -9,8 +9,7 @@ dlib
 Pillow
 imageio
 scipy
-numpy
-
+numpy==1.23.5
 ffmpeg-python==0.2.0
 imageio-ffmpeg==0.4.7
 matplotlib==3.6.0
@@ -33,6 +32,38 @@ databases
 psycopg2-binary
 pydantic[email]
 email-validator
+face-alignment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
