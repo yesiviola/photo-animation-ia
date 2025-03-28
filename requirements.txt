@@ -23,6 +23,7 @@ tqdm==4.64.1
 slowapi
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt>=3.2.0
 boto3
 requests
 python-dotenv
@@ -33,6 +34,9 @@ psycopg2-binary
 pydantic[email]
 email-validator
 face-alignment
+bcrypt==4.0.1
+passlib[bcrypt]==1.7.4
+
 
 
 

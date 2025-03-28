@@ -28,6 +28,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY fomm/ fomm/
 COPY static/ static/
 
+COPY models/ models/
+
 # 6. Copiar el resto del código (excluyendo .env)
 COPY . .
 

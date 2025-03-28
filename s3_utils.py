@@ -13,19 +13,16 @@ s3 = boto3.client(
 
 def upload_to_s3(file_path: str, key: str) -> str:
     """
-    Sube el archivo 'file_path' a 'key' en S3.
-    Retorna la URL pública si el bucket es público.
+    Sube el archivo 'file_path' a S3 en la clave 'key'.
+    Retorna la URL pública (si el bucket es público).
     """
     bucket_name = os.getenv('AWS_S3_BUCKET')
     s3.upload_file(file_path, bucket_name, key)
     return f"https://{bucket_name}.s3.amazonaws.com/{key}"
 
-
-
-
-def download_from_s3(s3_key: str, local_path: str):
+def download_from_s3(key: str, file_path: str):
     """
-    Descarga el archivo desde S3 usando 's3_key' y lo guarda en 'local_path'.
+    Descarga el archivo de S3 especificado por 'key' y lo guarda en 'file_path'.
     """
     bucket_name = os.getenv('AWS_S3_BUCKET')
-    s3.download_file(bucket_name, s3_key, local_path)
+    s3.download_file(bucket_name, key, file_path)

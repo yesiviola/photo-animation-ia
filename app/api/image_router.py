@@ -11,6 +11,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @router.post("/upload")
 async def upload_image(file: UploadFile = File(...)):
+    
     # Validar la extensión del archivo
     file_extension = os.path.splitext(file.filename)[1].lower()
     if file_extension not in [".jpg", ".jpeg", ".png"]:

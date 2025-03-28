@@ -25,11 +25,10 @@ async def animate_image(
     current_user: dict = Depends(get_current_user)
 ):
     """
-    Aplica IA para animar la imagen cuyo id se pasa como parámetro.
+    Aplica FOMM para animar la imagen con el ID dado.
     - Si se suministra un driving_video_id, se buscará en "temp_uploads" (video personalizado).
     - Si no, se usará el video fijo ubicado en "static/driving.mp4".
-    
-    Además, si la imagen no se encuentra localmente, se intentará descargar desde S3.
+    - Si la imagen no se encuentra localmente, se intentará descargar desde S3.
     """
     # Asegurarse de que el directorio temp_uploads exista
     os.makedirs("temp_uploads", exist_ok=True)
@@ -37,7 +36,7 @@ async def animate_image(
     possible_extensions = [".jpg", ".jpeg", ".png"]
     image_path = None
 
-    # Buscar la imagen localmente; si no existe, intentar descargarla de S3
+    # Buscar la imagen localmente; si no se encuentra, intentar descargar desde S3
     for ext in possible_extensions:
         temp_path = os.path.join("temp_uploads", f"{image_id}{ext}")
         if os.path.exists(temp_path):
@@ -61,10 +60,7 @@ async def animate_image(
     if driving_video_id:
         driving_video_path = os.path.join("temp_uploads", f"{driving_video_id}.mp4")
         if not os.path.exists(driving_video_path):
-            raise HTTPException(
-                status_code=404,
-                detail=f"Video personalizado con ID {driving_video_id} no encontrado"
-            )
+            raise HTTPException(status_code=404, detail=f"Video personalizado con ID {driving_video_id} no encontrado")
     else:
         driving_video_path = os.path.join("static", "driving.mp4")
         if not os.path.exists(driving_video_path):
@@ -79,7 +75,7 @@ async def animate_image(
     s3_key = f"animations/{uuid.uuid4()}.mp4"
     s3_url = upload_to_s3(output_video_path, s3_key)
 
-    # Guardar el registro de la animación en la base de datos
+    # Guardar el registro en la base de datos
     new_anim = Animation(
         user_id=current_user.id,
         s3_url=s3_url
