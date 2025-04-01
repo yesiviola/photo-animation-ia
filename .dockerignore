@@ -1,21 +1,52 @@
-# Excluir el entorno virtual
+# Entornos virtuales y dependencias
 .venv
-# Excluir archivos y carpetas de git
-.git
+venv/
+env/
+
+# Control de versiones
+.git/
 .gitignore
-# Excluir archivos temporales y cachés
-__pycache__
+.github/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
 *.pyc
 *.pyo
 *.pyd
+*.so
+.Python
 
+# Bases de datos locales y archivos temporales
 *.db
 *.sqlite3
-# Excluir otros archivos o carpetas pesadas que no necesites en la imagen
-docker-compose.yml
+*.sqlite
+*.dump
+
+# Logs y caché
 *.log
-.pytest_cache
+logs/
+.pytest_cache/
+.cache/
 
-node_modules
+# Archivos de desarrollo y configuración local
+docker-compose*
+docker-compose.*
+.env
+.env.local
+.env.dev
+.env.prod
+.idea/
+.vscode/
+*.swp
+*.swo
 
-COPY .env .
+# Node.js (si no lo usas, elimínalo)
+node_modules/
+npm-debug.log*
+
+# Archivos pesados o innecesarios
+*.zip
+*.tar.gz
+*.rar
+.DS_Store
