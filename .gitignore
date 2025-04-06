@@ -48,3 +48,5 @@ node_modules/
 /backend/models/
 face-alignment/
 frontend/node_modules/
+aws/
+awscliv2.zip
