@@ -1,5 +1,5 @@
 # 1. Usar una imagen base de Python
-FROM python:3.9-slim-buster
+FROM python:3.9-slim
 
 # 2. Instalar utilidades del sistema necesarias para compilar dlib (cmake, g++, etc.)
 RUN apt-get update && \
@@ -20,6 +20,9 @@ WORKDIR /app
 
 # 4. Copiar el archivo de requerimientos
 COPY requirements.txt .
+
+
+ENV PIP_DEFAULT_TIMEOUT=200
 
 # 5. Instalar dependencias con pip
 RUN pip install --no-cache-dir -r requirements.txt
