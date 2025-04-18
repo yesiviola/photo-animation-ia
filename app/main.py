@@ -1,58 +1,54 @@
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi import FastAPI  # ya no necesitas HTTPException aquí
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from app.api.image_router import router as image_router
-from app.api.animation_router import router as animation_router
-from app.api.auth_router import router as auth_router
-from app.api.videos_router import router as videos_router
 from slowapi.middleware import SlowAPIMiddleware
-from app.database import init_db
 
-# Configurar el rate limiter
+from app.api.image_router     import router as image_router
+from app.api.animation_router import router as animation_router
+from app.api.auth_router      import router as auth_router
+from app.api.videos_router    import router as videos_router
+from app.database             import init_db
+
+# 1️⃣ Configuramos el rate limiter de slowapi
 limiter = Limiter(key_func=get_remote_address)
 
 def create_app() -> FastAPI:
-    # Crear la instancia de FastAPI
     app = FastAPI(
         title="Photo Animation IA",
         description="Backend para el proyecto Photo Animation IA",
         version="1.0.0"
     )
 
-    init_db() #llamamos a init_db para crear table si no existe
+    # 2️⃣ Inicializar la base de datos (crea tablas si no existen)
+    init_db()
 
-    # Configurar el rate limiter y el middleware
+    # 3️⃣ CORSMiddleware (¡ANTES de incluir routers!)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],       # en desarrollo vale "*"
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # 4️⃣ Rate‑limiting middleware (SlowAPI)
     app.state.limiter = limiter
     app.add_middleware(SlowAPIMiddleware)
 
-    # Incluir los routers
-    app.include_router(image_router, prefix="/images", tags=["Images"])
-    app.include_router(animation_router, prefix="/animation", tags=["Animation"])
-    app.include_router(auth_router, prefix="/auth", tags=["Auth"])
-    app.include_router(videos_router, prefix="/videos", tags=["Videos"])
+    # 5️⃣ Montamos los routers
+    app.include_router(image_router,      prefix="/images",    tags=["Images"])
+    app.include_router(animation_router,  prefix="/animation", tags=["Animation"])
+    app.include_router(auth_router,       prefix="/auth",      tags=["Auth"])
+    app.include_router(videos_router,     prefix="/videos",    tags=["Videos"])
 
-    # Manejador global de excepciones HTTP
-    @app.exception_handler(HTTPException)
-    async def http_exception_handler(request: Request, exc: HTTPException):
-        return JSONResponse(
-            status_code=exc.status_code,
-            content={"message": exc.detail}
-        )
-
-    # Manejador de excepciones para rate-limiting
-    @app.exception_handler(RateLimitExceeded)
-    async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
-        return PlainTextResponse("Too many requests", status_code=429)
-
-    # Endpoint de prueba con rate-limiting
+    # 6️⃣ (Opcional) Endpoint de prueba
     @app.get("/test")
     @limiter.limit("5/minute")
-    def test_endpoint(request: Request):
+    def test_endpoint(request):
         return {"message": "Hasta 5 requests por minuto"}
 
     return app
 
-# Crear la aplicación
+# 7️⃣ Creamos la app
 app = create_app()
