@@ -50,3 +50,5 @@ face-alignment/
 frontend/node_modules/
 aws/
 awscliv2.zip
+models/vox-cpk.pth.tar
+
