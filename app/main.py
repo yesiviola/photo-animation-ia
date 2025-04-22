@@ -1,4 +1,5 @@
-from fastapi import FastAPI  # ya no necesitas HTTPException aquí
+# app/main.py
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -10,7 +11,6 @@ from app.api.auth_router      import router as auth_router
 from app.api.videos_router    import router as videos_router
 from app.database             import init_db
 
-# 1️⃣ Configuramos el rate limiter de slowapi
 limiter = Limiter(key_func=get_remote_address)
 
 def create_app() -> FastAPI:
@@ -20,35 +20,34 @@ def create_app() -> FastAPI:
         version="1.0.0"
     )
 
-    # 2️⃣ Inicializar la base de datos (crea tablas si no existen)
+    # Inicializa la base de datos
     init_db()
 
-    # 3️⃣ CORSMiddleware (¡ANTES de incluir routers!)
+    # CORS: ¡permitir todo mientras debuggeamos solo prueba!
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],       # en desarrollo vale "*"
+        allow_origins=["*"],       # <- aquí
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    # 4️⃣ Rate‑limiting middleware (SlowAPI)
+    # Rate‑limiting (SlowAPI)
     app.state.limiter = limiter
     app.add_middleware(SlowAPIMiddleware)
 
-    # 5️⃣ Montamos los routers
+    # Routers
     app.include_router(image_router,      prefix="/images",    tags=["Images"])
     app.include_router(animation_router,  prefix="/animation", tags=["Animation"])
     app.include_router(auth_router,       prefix="/auth",      tags=["Auth"])
     app.include_router(videos_router,     prefix="/videos",    tags=["Videos"])
 
-    # 6️⃣ (Opcional) Endpoint de prueba
+    # Endpoint de prueba
     @app.get("/test")
     @limiter.limit("5/minute")
-    def test_endpoint(request):
+    def test_endpoint(request: Request):
         return {"message": "Hasta 5 requests por minuto"}
 
     return app
 
-# 7️⃣ Creamos la app
 app = create_app()
