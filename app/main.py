@@ -1,3 +1,5 @@
+# app/main.py
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
@@ -10,6 +12,7 @@ from app.api.auth_router      import router as auth_router
 from app.api.videos_router    import router as videos_router
 from app.database             import init_db
 
+# Configuramos el rate-limiter de slowapi
 limiter = Limiter(key_func=get_remote_address)
 
 def create_app() -> FastAPI:
@@ -22,20 +25,20 @@ def create_app() -> FastAPI:
     # Inicializa la base de datos
     init_db()
 
-    # CORS: ¡permitir todo mientras debuggeamos solo prueba!
+    # ✨ CORS abierto durante desarrollo para descartar bloqueos
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],       # <- aquí
+        allow_origins=["http://localhost:5173"],     
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    # Rate‑limiting (SlowAPI)
+    # Rate-limiting middleware (SlowAPI)
     app.state.limiter = limiter
     app.add_middleware(SlowAPIMiddleware)
 
-    # Routers
+    # Montamos los routers
     app.include_router(image_router,      prefix="/images",    tags=["Images"])
     app.include_router(animation_router,  prefix="/animation", tags=["Animation"])
     app.include_router(auth_router,       prefix="/auth",      tags=["Auth"])
@@ -49,4 +52,5 @@ def create_app() -> FastAPI:
 
     return app
 
+# Creamos la app
 app = create_app()
