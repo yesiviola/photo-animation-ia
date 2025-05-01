@@ -22,23 +22,29 @@ def create_app() -> FastAPI:
         version="1.0.0"
     )
 
-    # Inicializa la base de datos
+    # base de datos
     init_db()
 
-    # ✨ CORS abierto durante desarrollo para descartar bloqueos
+    #CORS abierto durante desarrollo para descartar bloqueos
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["http://localhost:5173"],     
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"],
+        allow_headers=["Authorization",
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "User-Agent",
+            "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Credentials"],
     )
 
     # Rate-limiting middleware (SlowAPI)
     app.state.limiter = limiter
     app.add_middleware(SlowAPIMiddleware)
 
-    # Montamos los routers
+    #routers
     app.include_router(image_router,      prefix="/images",    tags=["Images"])
     app.include_router(animation_router,  prefix="/animation", tags=["Animation"])
     app.include_router(auth_router,       prefix="/auth",      tags=["Auth"])
