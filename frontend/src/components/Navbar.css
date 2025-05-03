@@ -1,0 +1,94 @@
+.navbar {
+    /* Imagen de fondo */
+    background: url("/images/navbar.webp") no-repeat center center;
+    background-size: cover; /* Ajusta la imagen para que ocupe todo el contenedor */
+    
+    /* Posicionamiento y layout */
+    position: relative; /* Para usar pseudo-elemento overlay si lo deseas */
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Opcional: Overlay semitransparente para que el texto se vea mejor */
+  .navbar::before {
+    content: "";
+    position: absolute;
+    inset: 1; /* top:0; right:0; bottom:0; left:0; */
+    background-color: rgba(0, 0, 0, 0.3); /* capa oscura al 30% */
+    z-index: 0;
+  }
+  
+  /* Forzamos los hijos de .navbar a estar por encima del overlay */
+  .navbar > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Estilo del h2 (con efecto arcoíris) */
+  .navbar h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, red, orange,black, yellow, green, blue, indigo, violet, white);
+    background-size: 500%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbowAnimation 5s linear infinite;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  
+  @keyframes rainbowAnimation {
+    0% {
+      background-position: 30%;
+    }
+    100% {
+      background-position: 100%;
+    }
+  }
+  
+  /* Estilos de la lista */
+  .navbar ul {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar ul li {
+    list-style: none;
+    position: relative;
+    font-weight: 700;
+    letter-spacing: 3px;
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+  }
+  
+  /* Enlaces del menú */
+  .navbar ul li a {
+    text-decoration: none;
+    color: white; /* color claro para destacar sobre el fondo */
+    transition: color 0.4s ease;
+  }
+  
+  /* Hover en li */
+  .navbar ul li:hover {
+    transform: scale(1.2) rotateY(5deg);
+    text-shadow: 0 1 10px #00ff99, 0 0 20px #00ff99;
+  }
+  
+  /* Subrayado animado en hover */
+  .navbar ul li::before {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, cyan, magenta, yellow);
+    transition: width 0.3s ease;
+  }
+  
+  .navbar ul li:hover::before {
+    width: 100%;
+  }
+  

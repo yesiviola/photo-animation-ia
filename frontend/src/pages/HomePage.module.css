@@ -1,0 +1,29 @@
+.homeContainer {
+  width: 100%;
+  min-height: 80vh; /* para ocupar casi toda la pantalla */
+  padding: 2rem;
+  background-color: #f7f7f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centrar horizontalmente */
+  gap: 2rem;
+  /* margin-top: 60px; 
+     si la navbar no es fija, no hace falta; 
+     si la navbar es position: fixed, podrías usar margin-top */
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  margin: 0;
+  text-align: center;
+  max-width: 600px;
+}
