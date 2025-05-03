@@ -1,0 +1,3 @@
+Photo Animation IA es una aplicación full-stack que permite a los usuarios subir fotografías y generar animaciones realistas a partir de ellas, basándose en el modelo de First-Order Motion (FOMM).
+En el front-end utilizo React con Vite para una experiencia muy ágil, y en el back-end FastAPI desplegada en Docker, con PostgreSQL como base de datos. Para el almacenamiento y distribución de activos, integro AWS S3: allí subo las imágenes originales y publico los vídeos animados resultantes, aprovechando las credenciales y buckets configurados vía variables de entorno.
+Además, aplico buenas prácticas de CORS, autenticación con JWT y rate-limiting con SlowAPI, todo orquestado mediante Docker Compose para desarrollo y producción.
