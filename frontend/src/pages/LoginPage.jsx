@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../axiosConfig";
 import { useNavigate } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 
@@ -13,15 +13,11 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const params = new URLSearchParams();
       params.append("username", formData.username);
       params.append("password", formData.password);
-      
-      // Usa la ruta relativa para activar el proxy
-      const { data } = await axios.post("/api/auth/login", params);
-      
+      const { data } = await axios.post("/auth/login", params);
       localStorage.setItem("access_token", data.access_token);
       navigate("/");
     } catch (error) {

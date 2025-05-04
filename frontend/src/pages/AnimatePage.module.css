@@ -1,0 +1,85 @@
+.animateContainer {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .field {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input {
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .button {
+    padding: 0.7rem 1.2rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #0069d9;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color .2s;
+  }
+  
+  .button:hover {
+    background-color: #0053ba;
+  }
+  
+  .buttonSmall {
+    padding: 0.4rem 0.8rem;
+    margin-top: 0.5rem;
+    align-self: flex-start;
+    border: none;
+    border-radius: 4px;
+    background-color: #28a745;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color .2s;
+  }
+  
+  .buttonSmall:hover {
+    background-color: #218838;
+  }
+  
+  .previewVideo {
+    margin-top: 1rem;
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  
+  .idText {
+    margin-top: 0.5rem;
+    color: #555;
+    font-family: monospace;
+  }
+  
+  .message {
+    margin-top: 1rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+  }
+  

@@ -7,6 +7,7 @@ function UploadPage() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [uploadId, setUploadId] = useState("");
   const [message, setMessage] = useState("");
+  const [copied, setCopied] = useState(false);
   const token = localStorage.getItem("access_token");
 
   const handleFileChange = (e) => {
@@ -16,6 +17,7 @@ function UploadPage() {
     setPreviewUrl(URL.createObjectURL(f));
     setUploadId("");
     setMessage("");
+    setCopied(false);
   };
 
   const handleUpload = async () => {
@@ -27,18 +29,26 @@ function UploadPage() {
     form.append("file", file);
 
     try {
-      const { data } = await axios.post("/api/images/upload", form, {
+      const { data } = await axios.post("/images/upload", form, {
         headers: {
-        
           Authorization: `Bearer ${token}`,
         },
       });
       setUploadId(data.image_id);
       setMessage("¡Imagen subida con éxito!");
+      setCopied(false);
     } catch (err) {
       console.error("Upload error:", err);
       setMessage("Error al subir la imagen");
     }
+  };
+
+  const handleCopy = () => {
+    if (!uploadId) return;
+    navigator.clipboard.writeText(uploadId).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   return (
@@ -47,10 +57,13 @@ function UploadPage() {
         type="file"
         onChange={handleFileChange}
         className={styles.inputFile}
+        accept="image/*"
       />
+
       <button onClick={handleUpload} className={styles.button}>
         Subir Imagen
       </button>
+
       {previewUrl && (
         <img
           src={previewUrl}
@@ -58,8 +71,20 @@ function UploadPage() {
           className={styles.preview}
         />
       )}
+
       {message && <p className={styles.message}>{message}</p>}
-      {uploadId && <p className={styles.idText}>ID: {uploadId}</p>}
+
+      {uploadId && (
+        <div className={styles.idRow}>
+          <span className={styles.idText}>{uploadId}</span>
+          <button
+            onClick={handleCopy}
+            className={styles.copyButton}
+          >
+            {copied ? "¡Copiado!" : "Copiar"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
